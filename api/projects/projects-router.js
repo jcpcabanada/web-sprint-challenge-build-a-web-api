@@ -2,8 +2,11 @@
 const express = require('express');
 const Projects = require('./projects-model');
 const router = express.Router();
+
 //---------middleware---------
+
 const {logger, idValidation} = require('./projects-middleware')
+
 //---------endpoints---------
 
 //[GET] /api/projects
@@ -36,10 +39,19 @@ router.get('/:id', idValidation, logger, (req, res, next) => {
 //[POST] /api/projects
 
 router.post('/', logger, (req, res, next) => {
-    //something
-    // Actions.something()
-    //     .then()
-    //     .catch()
+    const {name, description} = req.body
+
+    if (!name || !description) {
+        res.status(400).json({
+            message: "Name and/or Description are required fields!"
+        })
+    } else {
+        Projects.insert(req.body)
+            .then(newProject => {
+                res.status(201).json(newProject)
+            })
+            .catch(next)
+    }
 })
 
 //[PUT] /api/projects/:id
