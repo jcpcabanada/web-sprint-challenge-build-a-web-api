@@ -18,8 +18,9 @@ function idValidation(req, res, next ) {
                 next()
             }
         })
-        .catch(next())
+        .catch(next)
 }
+
 module.exports= {
     logger,
     idValidation
