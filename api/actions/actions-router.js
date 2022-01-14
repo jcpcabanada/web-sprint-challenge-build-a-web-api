@@ -73,9 +73,13 @@ router.delete('/:id', actionIdValidation, (req, res, next) => {
     const { id } = req.params
     Actions.remove(id)
         .then(delAction => {
-            res.status(404).json({
-                message: "Selected Action could not be found/deleted!"
-            })
+            if(!delAction){
+                res.status(404).json({
+                    message: "Selected Action could not be found/deleted!"
+                })
+            } else{
+                res.json(delAction)
+            }
         })
         .catch(next)
 })
