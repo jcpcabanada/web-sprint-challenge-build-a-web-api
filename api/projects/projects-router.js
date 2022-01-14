@@ -57,28 +57,49 @@ router.post('/', logger, (req, res, next) => {
 //[PUT] /api/projects/:id
 
 router.put('/:id', idValidation, logger, (req, res, next) => {
-    //something
-    // Actions.something()
-    //     .then()
-    //     .catch()
+    const { id } = req.params
+    const { name, description, completed} = req.body
+
+    if(!name || !description || completed === undefined ) {
+        res.status(400).json({
+            message: "Name and/or Description not received!"
+        })
+    } else {
+        Projects.update(id, {name, description, completed})
+            .then(changes => {
+                res.json(changes)
+            })
+            .catch(next)
+    }
+
 })
 
 //[DELETE] /api/projects/:id
 
 router.delete('/:id', idValidation, logger, (req, res, next) => {
-    //something
-    // Actions.something()
-    //     .then()
-    //     .catch()
+    const { id } = req.params
+    Projects.remove(id)
+        .then(deletedProject => {
+            if(!deletedProject){
+                res.status(404).json({
+                    message: "Project selected could not be deleted/found!"
+                })
+            } else {
+                res.json(deletedProject)
+            }
+        })
+        .catch(next)
 })
 
 //[GET] /api/projects/:id/actions
 
 router.get('/:id/actions', idValidation, logger, (req, res, next) => {
-    //something
-    // Actions.something()
-    //     .then()
-    //     .catch()
+    const {id} = req.params
+    Projects.getProjectActions(id)
+        .then(action => {
+            res.json(action)
+        })
+        .catch(next)
 })
 
 module.exports = router;
